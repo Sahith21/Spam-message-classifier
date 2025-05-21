@@ -1,5 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   const [text, setText] = useState('');
@@ -19,23 +24,12 @@ function App() {
 };
 
   return (
-    <div className="container mt-5">
-      <h2>Spam Message Classifier</h2>
-      <textarea
-        className="form-control"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Enter a message..."
-      />
-      <button className="btn btn-primary mt-2" onClick={classify}>
-        Classify
-      </button>
-      {prediction && (
-        <div className="alert alert-info mt-3">
-          This message is predicted as: <strong>{prediction}</strong>
-        </div>
-      )}
-    </div>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
   );
 }
 

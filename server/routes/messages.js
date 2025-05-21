@@ -3,6 +3,21 @@ const router = express.Router();
 const Message = require('../Models/Message');
 const brain = require('brain.js');
 const { net, loadModel, saveModel } = require('../model');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = 'sahith';
+
+const verifyToken = (req, res, next) => {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(403).json({ message: 'No token provided' });
+
+  try {
+    const decoded = jwt.verify(token.split(' ')[1], JWT_SECRET);
+    req.userId = decoded.id;
+    next();
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};
 
 router.get('/', async (req, res) => {
   const messages = await Message.find();
@@ -37,7 +52,7 @@ router.delete('/cleanup', async (req, res) => {
   res.send("Cleanup complete");
 });
 
-router.post('/predict', async (req, res) => {
+router.post('/predict', verifyToken,async (req, res) => {
     try {
         const { text } = req.body;
         if (!text) return res.status(400).json({ error: 'No text provided' });
